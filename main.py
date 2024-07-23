@@ -83,6 +83,7 @@ def insert_voters(conn, cur, voter):
             )
             VALUES
             (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (voter_id) DO NOTHING
         """,(
             voter['voter_id'], voter['voter_name'], voter['date_of_birth'], voter['gender'], voter['nationality'],
             voter['registration_number'], voter['address']['street'], voter['address']['city'], voter['address']['state'], 
