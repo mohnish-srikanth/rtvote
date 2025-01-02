@@ -35,10 +35,11 @@ if __name__ == "__main__":
             ) col;
         """
     )
-    candidates = [candidate[0] for candidate in cur.fetchall()]
+    candidates = cur.fetchall()
+    candidates = [candidate[0] for candidate in candidates]
     
     if len(candidates) == 0:
-        raise Exception("No cadidates in database")
+        raise Exception("No candidates in database")
     else:
         print(candidates)
 
@@ -67,13 +68,13 @@ if __name__ == "__main__":
                     print('User {} is voting for candidate: {}'.format(vote['voter_id'], vote['candidate_id']))
                     cur.execute(
                         """
-                        INSERT INTO VOTES(VOTER_ID, CANDIDATE_ID, VOTING_TIME)
-                        VALUE(%s, %s, %s)
+                        INSERT INTO VOTES (VOTER_ID, CANDIDATE_ID, VOTING_TIME)
+                        VALUES (%s, %s, %s)
                         """, (vote['voter_id'], vote['candidate_id'], vote['voting_time'])
                     )
                     conn.commit()
                     producer.produce(
-                        topic = 'voter-topic',
+                        topic = 'votes_topic',
                         key = vote['voter_id'],
                         value = json.dumps(vote),
                         on_delivery = delivery_report
